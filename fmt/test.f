@@ -1,0 +1,74 @@
+      PROGRAM TEST
+       IMPLICIT LOGICAL (C, S, X, Y)
+
+       CALL RUN_TEST(1, COS_Y_ZERO_TEST())
+       CALL RUN_TEST(2, COS_Y_ZERO_ROUND_TEST())
+       CALL RUN_TEST(3, SIN_X_ZERO_TEST())
+       CALL RUN_TEST(4, SIN_X_ZERO_ROUND_TEST())
+       CALL RUN_TEST(5, X_FIXED_Y_SYMMETRY_TEST())
+       CALL RUN_TEST(6, Y_FIXED_X_SYMMETRY_TEST())
+      END
+
+      SUBROUTINE RUN_TEST(N, T)
+        INTEGER N
+        LOGICAL T
+
+        IF (T) THEN
+          PRINT *, N, ': PASS'
+        ELSE
+          PRINT *, N, ': FAIL'
+        END IF
+      END
+
+      LOGICAL FUNCTION COS_Y_ZERO_TEST()
+        DOUBLE PRECISION Z
+        LOGICAL*1 FUN
+        COMMON /z/ Z
+        
+        COS_Y_ZERO_TEST = .NOT. FUN(90.D0, 90.D0)
+      END
+
+      LOGICAL FUNCTION COS_Y_ZERO_ROUND_TEST()
+        DOUBLE PRECISION Z
+        LOGICAL*1 FUN
+        COMMON /z/ Z
+
+        COS_Y_ZERO_ROUND_TEST = .NOT. FUN(90.D0, 270.D0)
+      END
+
+      LOGICAL FUNCTION SIN_X_ZERO_TEST()
+        DOUBLE PRECISION Z
+        LOGICAL*1 FUN
+        COMMON /z/ Z
+
+        SIN_X_ZERO_TEST = FUN(0.D0, 10.D0) .AND. Z .EQ. 0.D0
+      END
+
+      LOGICAL FUNCTION SIN_X_ZERO_ROUND_TEST()
+        DOUBLE PRECISION Z
+        LOGICAL*1 FUN
+        COMMON /z/ Z
+
+        SIN_X_ZERO_ROUND_TEST = FUN(720.D0, 10.D0) .AND. Z .EQ. 0.D0
+      END
+
+      LOGICAL FUNCTION X_FIXED_Y_SYMMETRY_TEST()
+        DOUBLE PRECISION Z, TEMP
+        LOGICAL*1 FUN, R
+        COMMON /z/ Z
+
+        R = FUN(10.D0, 10.D0)
+        TEMP = Z
+        X_FIXED_Y_SYMMETRY_TEST = FUN(10.D0, -10.D0) .AND. TEMP .EQ. Z
+      END
+
+      LOGICAL FUNCTION Y_FIXED_X_SYMMETRY_TEST()
+        DOUBLE PRECISION Z, TEMP
+        LOGICAL*1 FUN, R
+        COMMON /z/ Z
+
+        R = FUN(10.D0, 10.D0)
+        TEMP = Z
+        Y_FIXED_X_SYMMETRY_TEST = FUN(-10.D0, 10.D0) .AND. TEMP .EQ. Z
+      END
+
